@@ -33,7 +33,7 @@ contract StarNotary is ERC721 {
 
     // Putting an Star for sale (Adding the star tokenid into the mapping starsForSale, first verify that the sender is the owner)
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public {
-        require(ownerOf(_tokenId) == msg.sender, "You can't sale the Star you don't owned");
+        require(ownerOf(_tokenId) == msg.sender, "You can't sale the Star you don't own");
         starsForSale[_tokenId] = _price;
     }
 
@@ -79,7 +79,7 @@ contract StarNotary is ERC721 {
     function transferStar(address _to1, uint256 _tokenId) public {
         //1. Check if the sender is the ownerOf(_tokenId)
         address starOwner = ownerOf(_tokenId);
-        require(msg.sender == starOwner, "INVALID: you are not the owner of these stars");
+        require(msg.sender == starOwner, "You don't own these stars");
         //2. Use the transferFrom(from, to, tokenId); function to transfer the Star
         _transferFrom(msg.sender, _to1, _tokenId);
     }
