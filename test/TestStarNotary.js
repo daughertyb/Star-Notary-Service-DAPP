@@ -67,7 +67,7 @@ it('lets user2 buy a star and decreases its balance in ether', async() => {
     await instance.putStarUpForSale(starId, starPrice, {from: user1});
     let balanceOfUser1BeforeTransaction = await web3.eth.getBalance(user2);
     const balanceOfUser2BeforeTransaction = await web3.eth.getBalance(user2);
-    await instance.buyStar(starId, {from: user2, value: balance, gasPrice:10});
+    await instance.buyStar(starId, {from: user2, value: balance, gasPrice:instance.gasPrice});
     const balanceAfterUser2BuysStar = await web3.eth.getBalance(user2);
     let value = Number(balanceOfUser2BeforeTransaction) - Number(balanceAfterUser2BuysStar);
     assert(balanceAfterUser2BuysStar < balanceOfUser2BeforeTransaction);
@@ -79,27 +79,27 @@ it('can add the star name and star symbol properly', async () => {
     // 1. create a Star with different tokenId
     let instance = await StarNotary.deployed();
     let user1 = accounts[1];
-    let starId = 2;
+    let starId = 9;
     //2. Call the name and symbol properties in your Smart Contract and compare with the name and symbol provided
     await instance.createStar("awesome star", starId, { from: user1 });
     assert.equal(await instance.name(), "Galaxy");
     assert.equal(await instance.symbol(), "GNT");
 });
 
-it('lets 2 users exchange stars', async() => {
+it('lets 2 users exchange stars', async () => {
     let instance = await StarNotary.deployed();
     let user1 = accounts[1];
-    let starId1 = 2;
+    let starId1 = 10;
     let user2 = accounts[2];
-    let starId2 = 3;
+    let starId2 = 11;
     // 1. create 2 Stars with different tokenId
     await instance.createStar("awesome star1", starId1, { from: user1 });
     await instance.createStar("awesome star2", starId2, { from: user2 });
     // 2. Call the exchangeStars functions implemented in the Smart Contract
-    instance.exchangeStars(starId1, starId2);
+    await instance.exchangeStars(starId1, starId2, { from: user1 });
     // 3. Verify that the owners changed
-    assert.equal(instance.ownerOf(starId1), user2);
-    assert.equal(instance.ownerOf(starId2), user1);
+    assert.equal(await instance.ownerOf(starId1), user2);
+    assert.equal(await instance.ownerOf(starId2), user1);
 });
 
 it('lets a user transfer a star', async() => {
